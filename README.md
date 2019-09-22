@@ -1,6 +1,6 @@
 ## Prerequisites
 
-node
+Install node
 
 ```
 npm i @angular/cli --global
@@ -14,9 +14,9 @@ git clone https://github.com/nayfin/tour-of-nativescript.git
 
 cd tour-of-nativescript
 
-npm i
+git checkout 00-initial-clone-of-heroes
 
-git checkout 01-initial-clone-of-heroes
+npm i
 
 ng serve
 ```
@@ -51,4 +51,23 @@ You should see the classic Tour of Heroes app spin up on `localhost:4200`.
     ```
   - rerun `ng serve` to confirm web app is now running as expected again
 
-### 2. 
+### 2. Create Native Dashboard Route (02-create-dashboard)
+  - remove `auto-generated` folder and references to the component in `app.module.ts`, `app.module.ts.tns`, and `app-routing.module.ts.tns` files
+  - run ```ng g migrate-component --name=dashboard``` to add NativeScript template and style files to the dashboard folder
+  - open `app-routing.module.tns.ts` and add import for `DashboardComponent` and replace routes
+
+```javascript
+import { DashboardComponent } from '@src/app/dashboard/dashboard.component';
+
+export const routes: Routes = [
+  {
+      path: '',
+      redirectTo: '/dashboard',
+      pathMatch: 'full',
+  },
+  {
+      path: 'dashboard',
+      component: DashboardComponent,
+  },
+];
+```
