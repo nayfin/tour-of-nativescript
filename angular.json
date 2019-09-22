@@ -124,5 +124,8 @@
     "@schematics/angular:directive": {
       "prefix": "my"
     }
+  },
+  "cli": {
+    "defaultCollection": "@nativescript/schematics"
   }
 }
