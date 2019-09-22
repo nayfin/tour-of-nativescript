@@ -5,7 +5,7 @@ import { catchError } from 'rxjs/operators';
 
 import { Hero } from './hero';
 
-@Injectable()
+@Injectable({providedIn: 'root'})
 export class HeroSearchService {
   constructor(private http: HttpClient) {}
 
