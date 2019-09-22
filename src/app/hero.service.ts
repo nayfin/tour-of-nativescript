@@ -5,7 +5,7 @@ import { catchError, map } from 'rxjs/operators';
 
 import { Hero } from './hero';
 
-@Injectable()
+@Injectable({providedIn: 'root'})
 export class HeroService {
   private heroesUrl = 'app/heroes'; // URL to web api
 

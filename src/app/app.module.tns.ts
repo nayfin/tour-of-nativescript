@@ -23,7 +23,6 @@ import { DashboardComponent } from '@src/dashboard/dashboard.component';
     NativeScriptModule,
     AppRoutingModule,
   ],
-  providers: [],
   bootstrap: [AppComponent],
   schemas: [NO_ERRORS_SCHEMA]
 })
