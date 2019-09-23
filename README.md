@@ -49,12 +49,12 @@ You should see the classic Tour of Heroes app spin up on `localhost:4200`.
       "polyfills.ts"
     ]
     ```
-  - rerun `ng serve` to confirm web app is now running as expected again
+  - Rerun `ng serve` to confirm web app is now running as expected again
 
 ### 2. Create Native Dashboard Route (02-create-dashboard)
-  - remove `auto-generated` folder and references to the component in `app.module.ts`, `app.module.ts.tns`, and `app-routing.module.ts.tns` files
-  - run ```ng g migrate-component --name=dashboard``` to add NativeScript template and style files to the dashboard folder
-  - open `app-routing.module.tns.ts` and add import for `DashboardComponent` then replace routes with route to 
+  - Remove `auto-generated` folder and references to the component in `app.module.ts`, `app.module.ts.tns`, and `app-routing.module.ts.tns` files
+  - Run ```ng g migrate-component --name=dashboard``` to add NativeScript template and style files to the dashboard folder
+  - Open `app-routing.module.tns.ts` and add import for `DashboardComponent` then replace routes with route to 
 
     ```javascript
     import { DashboardComponent } from '@src/app/dashboard/dashboard.component';
@@ -71,7 +71,7 @@ You should see the classic Tour of Heroes app spin up on `localhost:4200`.
       },
     ];
     ```
-  - open `app.module.tns` add imports for `HttpClientInMemoryWebApiModule`, `InMemoryDataService`, and `NativeScriptHttpClientModule`, and configure `HttpClientInMemoryWebApiModule`.
+  - Open `app.module.tns` add imports for `HttpClientInMemoryWebApiModule`, `InMemoryDataService`, and `NativeScriptHttpClientModule`, and configure `HttpClientInMemoryWebApiModule`.
     ```javascript
     import { HttpClientInMemoryWebApiModule } from 'angular-in-memory-web-api';
     import { InMemoryDataService } from '@src/app/in-memory-data.service';
@@ -91,9 +91,9 @@ You should see the classic Tour of Heroes app spin up on `localhost:4200`.
     })
     ```
 
-### Style Dashboard Component (03-style-dashboard)
+### 3. Style Dashboard Component (03-style-dashboard)
 
-  - open `dashboard.component.tns.html` and replace generated markup with the following:
+  - Open `dashboard.component.tns.html` and replace generated markup with the following:
     ```xml
     <ActionBar title="Top Heroes"></ActionBar>
     <FlexboxLayout class="hero-container" flexDirection="column" flexGrow="2">
@@ -105,7 +105,7 @@ You should see the classic Tour of Heroes app spin up on `localhost:4200`.
       </Button>
     </FlexboxLayout>
     ```
-  - open `dashboard.component.tns.css` and add the following:
+  - Open `dashboard.component.tns.css` and add the following:
     ```css
     Button {
       border-color: rgb(216,59,1);
@@ -118,11 +118,11 @@ You should see the classic Tour of Heroes app spin up on `localhost:4200`.
     }
     ```
 
-### Create Native HeroDetailComponent (04-)
+### 4. Create Native HeroDetailComponent (04-migrate-hero-detail)
 
-  - run `ng g migrate-component --name=hero-detail` create the NativeScript files for the `HeroDetailComponent`, and automatically add it to the `app.module.ts`
+  - Run `ng g migrate-component --name=hero-detail` create the NativeScript files for the `HeroDetailComponent`, and automatically add it to the `app.module.ts`
 
-  - add `detail` route to `app-routing.module.ts` like this:
+  - Add `detail` route to `app-routing.module.ts` like this:
     ```js
     import { HeroDetailComponent } from '@src/app/hero-detail/hero-detail.component';
 
@@ -135,18 +135,119 @@ You should see the classic Tour of Heroes app spin up on `localhost:4200`.
     ];
     ```
 
-  - fix import `HeroDetailComponent` import in `app.module.ts`
+  - Fix import `HeroDetailComponent` import in `app.module.ts`
     ```js
     import { HeroDetailComponent } from '@src/app/hero-detail/hero-detail.component';
     ```
 
-  - add some markup for the native `HeroDetailComponent`:
+  - Add some markup for the native `HeroDetailComponent`:
     ```xml
-    <StackLayout>
+    <StackLayout *ngIf="hero">
       <Label [text]="hero.name" textWrap="true"></Label>
       <Label [text]="hero.id" textWrap="true"></Label>
       <Button [text]="'TAKE PHOTO'"(tap)="handleTakePhoto()"></Button>
-      <Image *ngIf="heroImagePath" [src]="heroImagePath" loadMode="async" stretch="aspectFit"></Image>
+      <Image 
+        *ngIf="heroImagePath" 
+        [src]="heroImagePath" 
+        loadMode="async" 
+        stretch="aspectFit">
+      </Image>
     </StackLayout>
     ```
+### 5. Add Camera Functionality (05-add-camera-functionality)
+
+  - Add camera plugin `npm i --save nativescript-camera`
+  - Add imports, and `handleTakePhoto` function to `HeroDetailComponent`
+    ```typescript
+    import * as camera from 'nativescript-camera';
+    import { knownFolders, path } from 'tns-core-modules/file-system';
+    import { ImageSource } from 'tns-core-modules/image-source/image-source';
+
+    export class HeroDetailComponent implements OnInit {
+      ...
+      heroImagePath = ''; // stores path to image
+
+      ...
+      handleTakePhoto() {
+        camera.isAvailable();
+        camera
+          .takePicture()
+          .then(imageAsset => {
+            const source = new ImageSource();
+            source.fromAsset(imageAsset).then((imageSource: ImageSource) => {
+              const folderPath = knownFolders.documents().path;
+              const fileName = 'test.jpg';
+              this.heroImagePath = path.join(folderPath, fileName);
+              const saved: boolean = imageSource.saveToFile(
+                this.heroImagePath,
+                'jpg'
+              );
+              if (saved) {
+                console.log('Saved: ' + this.heroImagePath);
+                console.log('Image saved successfully!');
+              }
+            });
+          })
+          .catch(err => {
+            console.log('Error -> ' + err.message);
+          });
+      }
+    }
+    ```
+  - Take a picture!
+
+### Split Native Logic (06-split-native-logic)
+  - Run `ng serve`, and you'll see that the web app can't resolve the NativeScript plugins
+
+  - Create two new files `photo.split.tns.ts` and `photo.split.ts`
+
+  - Add the following to 
+    ```typescript
+    import * as camera from 'nativescript-camera';
+    import { knownFolders, path } from 'tns-core-modules/file-system';
+    import { ImageSource } from 'tns-core-modules/image-source/image-source';
+
+
+
+    export function takePhoto() {
+      camera.isAvailable();
+      camera
+        .takePicture()
+        .then(imageAsset => {
+          const source = new ImageSource();
+          source.fromAsset(imageAsset).then((imageSource: ImageSource) => {
+            const folderPath = knownFolders.documents().path;
+            const fileName = 'test.jpg';
+            this.heroImagePath = path.join(folderPath, fileName);
+            const saved: boolean = imageSource.saveToFile(
+              this.heroImagePath,
+              'jpg'
+            );
+            if (saved) {
+              console.log('Saved: ' + this.heroImagePath);
+              console.log('Image saved successfully!');
+            }
+          });
+        })
+        .catch(err => {
+          console.log('Error -> ' + err.message);
+        });
+    }
+    ```
+  - Add the following to `photo.split.ts`:
+    ```typescript
+    export function takePhoto() {
+      console.error('ERROR: this function should never be called from a web context');
+    }
+    ```
+  - Add import for `detail.split` to `HeroDetailComponent` and update `handleTakePhoto` function
+    ```typescript
+    import { takePhoto } from './hero-detail.split.tns';
+
+    ...
+    handleTakePhoto() {
+      takePhoto();
+    }
+    ```
+  - Now it should use the `hero-detail.split.tns.ts` logic when in a native context and `hero-detail.split.ts` when in web context. Running `ng serve` should succeed now
 
