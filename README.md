@@ -118,3 +118,35 @@ You should see the classic Tour of Heroes app spin up on `localhost:4200`.
     }
     ```
 
+### Create Native HeroDetailComponent (04-)
+
+  - run `ng g migrate-component --name=hero-detail` create the NativeScript files for the `HeroDetailComponent`, and automatically add it to the `app.module.ts`
+
+  - add `detail` route to `app-routing.module.ts` like this:
+    ```js
+    import { HeroDetailComponent } from '@src/app/hero-detail/hero-detail.component';
+
+    export const routes: Routes = [
+      ...
+      { 
+        path: 'detail/:id', 
+        component: HeroDetailComponent 
+      },
+    ];
+    ```
+
+  - fix import `HeroDetailComponent` import in `app.module.ts`
+    ```js
+    import { HeroDetailComponent } from '@src/app/hero-detail/hero-detail.component';
+    ```
+
+  - add some markup for the native `HeroDetailComponent`:
+    ```xml
+    <StackLayout>
+      <Label [text]="hero.name" textWrap="true"></Label>
+      <Label [text]="hero.id" textWrap="true"></Label>
+      <Button [text]="'TAKE PHOTO'"(tap)="handleTakePhoto()"></Button>
+      <Image *ngIf="heroImagePath" [src]="heroImagePath" loadMode="async" stretch="aspectFit"></Image>
+    </StackLayout>
+    ```
+

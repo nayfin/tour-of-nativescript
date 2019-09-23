@@ -11,11 +11,13 @@ import { DashboardComponent } from '@src/app/dashboard/dashboard.component';
 // import { NativeScriptFormsModule } from 'nativescript-angular/forms';
 
 import { NativeScriptHttpClientModule } from 'nativescript-angular/http-client';
+import { HeroDetailComponent } from '@src/app/hero-detail/hero-detail.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     DashboardComponent,
+    HeroDetailComponent,
   ],
   imports: [
     NativeScriptModule,
