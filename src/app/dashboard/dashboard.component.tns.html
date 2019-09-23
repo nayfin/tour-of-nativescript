@@ -1,8 +1,13 @@
-<StackLayout>
-  <Label text="dashboard works" textWrap="true"></Label>
-  <Label text="This is a migrated component" textWrap="true"></Label>
-  <Label text="Update it to provide the UI elements required in your mobile app" textWrap="true"></Label>
-</StackLayout>
+<ActionBar title="Top Heroes"></ActionBar>
+<FlexboxLayout class="hero-container" flexDirection="column">
+  <Button 
+    flexGrow="1"
+    *ngFor="let hero of heroes" 
+    (tap)="gotoDetail(hero )" 
+    [text]="hero.name">
+  </Button>
+</FlexboxLayout>
+
 
 <!--
 Original Web template:
