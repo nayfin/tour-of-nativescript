@@ -3,13 +3,12 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
-import { HttpClientInMemoryWebApiModule, InMemoryDbService } from 'angular-in-memory-web-api';
+import { HttpClientInMemoryWebApiModule } from 'angular-in-memory-web-api';
 import { InMemoryDataService } from '@src/app/in-memory-data.service';
 // import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
 
 import { AppComponent } from '@src/app/app.component';
 import { AppRoutingModule } from '@src/app/app-routing.module';
-import { HeroService } from '@src/app/hero.service';
 import { DashboardComponent } from '@src/app/dashboard/dashboard.component';
 import { HeroesComponent } from '@src/app/heroes/heroes.component';
 import { HeroDetailComponent } from '@src/app/hero-detail/hero-detail.component';

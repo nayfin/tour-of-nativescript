@@ -54,7 +54,7 @@ You should see the classic Tour of Heroes app spin up on `localhost:4200`.
 ### 2. Create Native Dashboard Route (02-create-dashboard)
   - remove `auto-generated` folder and references to the component in `app.module.ts`, `app.module.ts.tns`, and `app-routing.module.ts.tns` files
   - run ```ng g migrate-component --name=dashboard``` to add NativeScript template and style files to the dashboard folder
-  - open `app-routing.module.tns.ts` and add import for `DashboardComponent` and replace routes
+  - open `app-routing.module.tns.ts` and add import for `DashboardComponent` then replace routes with route to 
 
 ```javascript
 import { DashboardComponent } from '@src/app/dashboard/dashboard.component';
@@ -71,8 +71,23 @@ export const routes: Routes = [
   },
 ];
 ```
+  - open `app.module.tns` add imports for `HttpClientInMemoryWebApiModule`, `InMemoryDataService`, and `NativeScriptHttpClientModule`, and configure `HttpClientInMemoryWebApiModule`.
+```javascript
+import { HttpClientInMemoryWebApiModule } from 'angular-in-memory-web-api';
+import { InMemoryDataService } from '@src/app/in-memory-data.service';
+import { NativeScriptHttpClientModule } from 'nativescript-angular/http-client';
 
+@NgModule({
+  ...
+  imports: [
+    ...
+    NativeScriptHttpClientModule,
+    HttpClientInMemoryWebApiModule.forRoot(InMemoryDataService, {
+      dataEncapsulation: false,
+      delay: 300,
+      passThruUnknownUrl: true
+    })
+  ]
+})
+```
 
-
-# TODO !!!
-- remove providers, and add provided in across all branches
