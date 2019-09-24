@@ -168,30 +168,31 @@ You should see the classic Tour of Heroes app spin up on `localhost:4200`.
       heroImagePath = ''; // stores path to image
 
       ...
-      handleTakePhoto() {
-        camera.isAvailable();
-        camera
-          .takePicture()
-          .then(imageAsset => {
-            const source = new ImageSource();
-            source.fromAsset(imageAsset).then((imageSource: ImageSource) => {
+      async handleTakePhoto(heroName: string) {
+        const isAvailable = camera.isAvailable();
+        if (isAvailable) {
+
+          this.heroImagePath = await camera
+            .takePicture()
+            .then(async imageAsset => {
+              const source = new ImageSource();
+              const imageSource = await source.fromAsset(imageAsset);
               const folderPath = knownFolders.documents().path;
-              const fileName = 'test.jpg';
-              this.heroImagePath = path.join(folderPath, fileName);
-              const saved: boolean = imageSource.saveToFile(
-                this.heroImagePath,
-                'jpg'
-              );
+              const fileName = `${heroName}.jpg`;
+              const heroImagePath = path.join(folderPath, fileName);
+              const saved: boolean = imageSource.saveToFile(heroImagePath, 'jpg');
               if (saved) {
-                console.log('Saved: ' + this.heroImagePath);
-                console.log('Image saved successfully!');
+                return heroImagePath;
               }
+              return null;
+            })
+            .catch(err => {
+              console.log('Error -> ' + err.message);
+              return null;
             });
-          })
-          .catch(err => {
-            console.log('Error -> ' + err.message);
-          });
+        }
       }
+      
     }
     ```
   - Take a picture!
