@@ -1,9 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
-import * as camera from 'nativescript-camera';
-import { knownFolders, path } from 'tns-core-modules/file-system';
-import { ImageSource } from 'tns-core-modules/image-source/image-source';
-
+import { takePhoto } from '@src/app/hero-detail/hero-detail.split';
 import { Hero } from '../hero';
 import { HeroService } from '../hero.service';
 
@@ -54,28 +51,7 @@ export class HeroDetailComponent implements OnInit {
   }
 
   async handleTakePhoto(heroName: string) {
-    const isAvailable = camera.isAvailable();
-    if (isAvailable) {
-
-      this.heroImagePath = await camera
-        .takePicture()
-        .then(async imageAsset => {
-          const source = new ImageSource();
-          const imageSource = await source.fromAsset(imageAsset);
-          const folderPath = knownFolders.documents().path;
-          const fileName = `${heroName}.jpg`;
-          const heroImagePath = path.join(folderPath, fileName);
-          const saved: boolean = imageSource.saveToFile(heroImagePath, 'jpg');
-          if (saved) {
-            return heroImagePath;
-          }
-          return null;
-        })
-        .catch(err => {
-          console.log('Error -> ' + err.message);
-          return null;
-        });
-    }
+    this.heroImagePath = await takePhoto(heroName);
   }
 }
 

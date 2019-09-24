@@ -200,50 +200,50 @@ You should see the classic Tour of Heroes app spin up on `localhost:4200`.
 ### Split Native Logic (06-split-native-logic)
   - Run `ng serve`, and you'll see that the web app can't resolve the NativeScript plugins
 
-  - Create two new files `photo.split.tns.ts` and `photo.split.ts`
+  - Create two new files `hero-detail.split.tns.ts` and `hero-detail.split.ts`
 
-  - Add the following to 
+  - Add the following to `hero-detail.split.tns.ts`
     ```typescript
     import * as camera from 'nativescript-camera';
     import { knownFolders, path } from 'tns-core-modules/file-system';
     import { ImageSource } from 'tns-core-modules/image-source/image-source';
 
+    export async function takePhoto(heroName: string) {
+      const isAvailable = camera.isAvailable();
+      if (isAvailable) {
 
-
-    export function takePhoto() {
-      camera.isAvailable();
-      camera
-        .takePicture()
-        .then(imageAsset => {
-          const source = new ImageSource();
-          source.fromAsset(imageAsset).then((imageSource: ImageSource) => {
+        return await camera
+          .takePicture()
+          .then(async imageAsset => {
+            const source = new ImageSource();
+            const imageSource = await source.fromAsset(imageAsset);
             const folderPath = knownFolders.documents().path;
-            const fileName = 'test.jpg';
-            this.heroImagePath = path.join(folderPath, fileName);
-            const saved: boolean = imageSource.saveToFile(
-              this.heroImagePath,
-              'jpg'
-            );
+            const fileName = `${heroName}.jpg`;
+            const heroImagePath = path.join(folderPath, fileName);
+            const saved: boolean = imageSource.saveToFile(heroImagePath, 'jpg');
             if (saved) {
-              console.log('Saved: ' + this.heroImagePath);
-              console.log('Image saved successfully!');
+              return heroImagePath;
             }
+            return null;
+          })
+          .catch(err => {
+            console.log('Error -> ' + err.message);
+            return null;
           });
-        })
-        .catch(err => {
-          console.log('Error -> ' + err.message);
-        });
+      }
     }
+
     ```
-  - Add the following to `photo.split.ts`:
+  - Add the following to `hero-detail.split.ts`
     ```typescript
-    export function takePhoto() {
-      console.error('ERROR: this function should never be called from a web context');
+    export async function takePhoto(heroName: string) {
+      console.error('This should never fire in a web context')
+      return 'not-a-filepath';
     }
     ```
   - Add import for `detail.split` to `HeroDetailComponent` and update `handleTakePhoto` function
     ```typescript
-    import { takePhoto } from './hero-detail.split.tns';
+    import { takePhoto } from './hero-detail.split';
 
     ...
     handleTakePhoto() {
