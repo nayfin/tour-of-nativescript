@@ -1,7 +1,7 @@
 <StackLayout>
   <Label [text]="hero.name" textWrap="true"></Label>
   <Label [text]="hero.id" textWrap="true"></Label>
-  <Button [text]="'TAKE PHOTO'"(tap)="handleTakePhoto()"></Button>
+  <Button [text]="'TAKE PHOTO'"(tap)="handleTakePhoto(hero.name)"></Button>
   <Image *ngIf="heroImagePath" [src]="heroImagePath" loadMode="async" stretch="aspectFit"></Image>
 </StackLayout>
 
