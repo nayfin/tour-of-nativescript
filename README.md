@@ -1,3 +1,49 @@
+<style>
+  img {
+    width: 100%;
+    max-width: 1000px;
+  }
+  body {
+    font-size: 1.2em;
+  }
+</style>
+# Migrating to Mobile with NativeScript
+## https://github.com/nayfin/tour-of-nativescript
+
+## What is NativeScript?
+
+NativeScript is tool helps developers use their web development skills to create native and hybrid apps, it can be leveraged with Angular, Vue or Vanilla JS. 
+
+NativeScript compiles the TS/JS down to the native language and has it's own XML markup, and CSS style systems. To convert a web app into a hybrid app, you create routes and templates for each view you want to share with the native app.
+
+![alt text](https://miro.medium.com/max/3405/1*GW5nqEDJ48NndzZK1zj3vQ.png "NativeScript code splitting diagram")
+
+When code is properly split/shared `ng serve` simply ignores the NativeScript files during its build process, while `tns run` intelligently chooses which files it need to build the native apps.
+
+<img src="https://miro.medium.com/max/3405/1*E6BqogQ_1g1N8nWyhVOCMw.png" alt="NativeScript build process diagram">
+![]( =400x400)
+
+## NativeScript Strengths:
+- Code sharing/splitting
+  - routes
+  - modules
+  - providers (services, guards, etc...)
+  - component logic
+- Dev tools
+  - NativeScript Playground App
+  - [Browser Based IDE](https://play.nativescript.org/)
+- Separate templates for web/native
+- Designed for incremental conversion 
+- Compiles to native language (so it's fast!!)
+- Really good plugins for native features (camera, gyroscope, etc...)
+
+## When should I pick NativeScript?
+- You need a hybrid app that:
+  - needs OS specific design
+  - has some shared and some split functionality
+  - needs access to native API
+- You have Angular/Vue/Web expertise that you want to leverage to create a native app
+
 ## Prerequisites
 
 Install node
@@ -197,7 +243,7 @@ You should see the classic Tour of Heroes app spin up on `localhost:4200`.
     ```
   - Take a picture!
 
-### Split Native Logic (06-split-native-logic)
+### 6. Split Native Logic (06-split-native-logic)
   - Run `ng serve`, and you'll see that the web app can't resolve the NativeScript plugins
 
   - Create two new files `hero-detail.split.tns.ts` and `hero-detail.split.ts`
@@ -246,9 +292,13 @@ You should see the classic Tour of Heroes app spin up on `localhost:4200`.
     import { takePhoto } from './hero-detail.split';
 
     ...
-    handleTakePhoto() {
-      takePhoto();
+  
+    handleTakePhoto(heroName: string) {
+      this.heroImagePath = await takePhoto(heroName);
     }
     ```
   - Now it should use the `hero-detail.split.tns.ts` logic when in a native context and `hero-detail.split.ts` when in web context. Running `ng serve` should succeed now
 
+## Helpful Links
+
+### - Sebastion  [blog.angular.io](https://blog.angular.io/apps-that-work-natively-on-the-web-and-mobile-9b26852495e7)
