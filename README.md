@@ -52,6 +52,8 @@ npm i @angular/cli --global
 
 ```
 
+`@Optional` follow [NativeScript Quick Setup](https://docs.nativescript.org/start/quick-setup) to prepare emulators
+
 ## Getting Started
 
 ```
