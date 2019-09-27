@@ -133,7 +133,8 @@ You should see the classic Tour of Heroes app spin up on `localhost:4200`.
           dataEncapsulation: false,
           delay: 300,
           passThruUnknownUrl: true
-        })
+        }),
+        ...
       ]
     })
     ```
@@ -218,28 +219,34 @@ You should see the classic Tour of Heroes app spin up on `localhost:4200`.
       async handleTakePhoto(heroName: string) {
         const isAvailable = camera.isAvailable();
         if (isAvailable) {
-
-          this.heroImagePath = await camera
-            .takePicture()
-            .then(async imageAsset => {
-              const source = new ImageSource();
-              const imageSource = await source.fromAsset(imageAsset);
-              const folderPath = knownFolders.documents().path;
-              const fileName = `${heroName}.jpg`;
-              const heroImagePath = path.join(folderPath, fileName);
-              const saved: boolean = imageSource.saveToFile(heroImagePath, 'jpg');
-              if (saved) {
-                return heroImagePath;
-              }
-              return null;
-            })
-            .catch(err => {
-              console.log('Error -> ' + err.message);
-              return null;
+          this.heroImagePath = await camera.requestPermissions().then(async () => {
+            // permission request accepted or already granted 
+            return await camera.takePicture()
+              .then(async imageAsset => {
+                const source = new ImageSource();
+                const imageSource = await source.fromAsset(imageAsset);
+                const folderPath = knownFolders.documents().path;
+                const fileName = `${heroName}.jpg`;
+                const heroImagePath = path.join(folderPath, fileName);
+                const saved: boolean = imageSource.saveToFile(heroImagePath, 'jpg');
+                if (saved) {
+                  return heroImagePath;
+                }
+                return null;
+              })
+              .catch(err => {
+                console.log('Error -> ' + err.message);
+                return null;
+              });
+            },
+            () => {
+            // permission request rejected
+            // ... tell the user ...
             });
+        
         }
       }
-      
+    ...
     }
     ```
   - Take a picture!
@@ -256,26 +263,32 @@ You should see the classic Tour of Heroes app spin up on `localhost:4200`.
     import { ImageSource } from 'tns-core-modules/image-source/image-source';
 
     export async function takePhoto(heroName: string) {
+    
       const isAvailable = camera.isAvailable();
       if (isAvailable) {
-
-        return await camera
-          .takePicture()
-          .then(async imageAsset => {
-            const source = new ImageSource();
-            const imageSource = await source.fromAsset(imageAsset);
-            const folderPath = knownFolders.documents().path;
-            const fileName = `${heroName}.jpg`;
-            const heroImagePath = path.join(folderPath, fileName);
-            const saved: boolean = imageSource.saveToFile(heroImagePath, 'jpg');
-            if (saved) {
-              return heroImagePath;
-            }
-            return null;
-          })
-          .catch(err => {
-            console.log('Error -> ' + err.message);
-            return null;
+        this.heroImagePath = await camera.requestPermissions().then(async () => {
+          // permission request accepted or already granted 
+          return await camera.takePicture()
+            .then(async imageAsset => {
+              const source = new ImageSource();
+              const imageSource = await source.fromAsset(imageAsset);
+              const folderPath = knownFolders.documents().path;
+              const fileName = `${heroName}.jpg`;
+              const heroImagePath = path.join(folderPath, fileName);
+              const saved: boolean = imageSource.saveToFile(heroImagePath, 'jpg');
+              if (saved) {
+                return heroImagePath;
+              }
+              return null;
+            })
+            .catch(err => {
+              console.log('Error -> ' + err.message);
+              return null;
+            });
+          },
+          () => {
+          // permission request rejected
+          // ... tell the user ...
           });
       }
     }
