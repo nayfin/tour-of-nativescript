@@ -5,7 +5,7 @@
 
 NativeScript is tool helps developers use their web development skills to create native and hybrid apps, it can be leveraged with Angular, Vue or Vanilla JS. 
 
-NativeScript compiles the TS/JS down to the native language and has it's own XML markup, and CSS style systems. To convert a web app into a hybrid app, you create routes and templates for each view you want to share with the native app.
+NativeScript compiles to a native application and has it's own XML markup, and CSS style systems. To convert a web app into a hybrid app, you create routes and templates for each view you want to share with the native app.
 
 ![alt text](https://miro.medium.com/max/3405/1*GW5nqEDJ48NndzZK1zj3vQ.png "NativeScript code splitting diagram")
 
