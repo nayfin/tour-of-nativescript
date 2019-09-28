@@ -45,12 +45,8 @@ When code is properly split/shared `ng serve` simply ignores the NativeScript fi
 
 ## Prerequisites
 
-Install node
-
-```
-npm i @angular/cli --global
-
-```
+- Node is installed
+- `npm i @angular/cli --global`
 
 `@Optional` follow [NativeScript Quick Setup](https://docs.nativescript.org/start/quick-setup) to prepare emulators
 
@@ -144,7 +140,7 @@ You should see the classic Tour of Heroes app spin up on `localhost:4200`.
   - Open `dashboard.component.tns.html` and replace generated markup with the following:
     ```xml
     <ActionBar title="Top Heroes"></ActionBar>
-    <FlexboxLayout class="hero-container" flexDirection="column" flexGrow="2">
+    <FlexboxLayout class="hero-container" flexDirection="column">
       <Button 
         flexGrow="1"
         *ngFor="let hero of heroes" 
@@ -190,10 +186,11 @@ You should see the classic Tour of Heroes app spin up on `localhost:4200`.
 
   - Add some markup for the native `HeroDetailComponent`:
     ```xml
+    <ActionBar [title]="hero.name + ' Details'"></ActionBar>
     <StackLayout *ngIf="hero">
       <Label [text]="hero.name" textWrap="true"></Label>
       <Label [text]="hero.id" textWrap="true"></Label>
-      <Button [text]="'TAKE PHOTO'"(tap)="handleTakePhoto()"></Button>
+      <Button [text]="'TAKE PHOTO'"(tap)="handleTakePhoto(hero.name)"></Button>
       <Image 
         *ngIf="heroImagePath" 
         [src]="heroImagePath" 
@@ -315,5 +312,7 @@ You should see the classic Tour of Heroes app spin up on `localhost:4200`.
   - Now it should use the `hero-detail.split.tns.ts` logic when in a native context and `hero-detail.split.ts` when in web context. Running `ng serve` should succeed now
 
 ## Helpful Links
+### - 
+### - Sebastian Witalec has a great overview on  [blog.angular.io](https://blog.angular.io/apps-that-work-natively-on-the-web-and-mobile-9b26852495e7)
 
-### - Sebastion  [blog.angular.io](https://blog.angular.io/apps-that-work-natively-on-the-web-and-mobile-9b26852495e7)
+### - Find NativeScript's web based IDE and playground at [play.nativescript.org](https://play.nativescript.org)
