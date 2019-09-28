@@ -312,7 +312,11 @@ You should see the classic Tour of Heroes app spin up on `localhost:4200`.
   - Now it should use the `hero-detail.split.tns.ts` logic when in a native context and `hero-detail.split.ts` when in web context. Running `ng serve` should succeed now
 
 ## Helpful Links
-### - 
+### - A great place to get started is with NativeScript's web based IDE and playground at [play.nativescript.org](https://play.nativescript.org) (the 'Build a Full App' tutorial is a great way to get acquainted with markup and layouts)
+
 ### - Sebastian Witalec has a great overview on  [blog.angular.io](https://blog.angular.io/apps-that-work-natively-on-the-web-and-mobile-9b26852495e7)
 
-### - Find NativeScript's web based IDE and playground at [play.nativescript.org](https://play.nativescript.org)
+
+### - Maximilian Schwarzmüller has a couple good resources
+  -  A comparison of NativeScript against similar technologies can be found on [academind.com](https://www.academind.com/learn/flutter/react-native-vs-flutter-vs-ionic-vs-nativescript-vs-pwa)
+  - A full NativeScript course can be found on [Udemy.com](https://www.udemy.com/course/nativescript-angular-build-native-ios-android-web-apps/)
