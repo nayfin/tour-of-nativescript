@@ -1,12 +1,3 @@
-<style>
-  img {
-    width: 100%;
-    max-width: 1000px;
-  }
-  body {
-    font-size: 1.2em;
-  }
-</style>
 # Migrating to Mobile with NativeScript
 ## https://github.com/nayfin/tour-of-nativescript
 
