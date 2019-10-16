@@ -1,12 +1,3 @@
-<style>
-  img {
-    width: 100%;
-    max-width: 1000px;
-  }
-  body {
-    font-size: 1.2em;
-  }
-</style>
 # Migrating to Mobile with NativeScript
 ## https://github.com/nayfin/tour-of-nativescript
 
@@ -14,14 +5,13 @@
 
 NativeScript is tool helps developers use their web development skills to create native and hybrid apps, it can be leveraged with Angular, Vue or Vanilla JS. 
 
-NativeScript compiles the TS/JS down to the native language and has it's own XML markup, and CSS style systems. To convert a web app into a hybrid app, you create routes and templates for each view you want to share with the native app.
+NativeScript compiles to a native application and has it's own XML markup, and CSS style systems. To convert a web app into a hybrid app, you create routes and templates for each view you want to share with the native app.
 
 ![alt text](https://miro.medium.com/max/3405/1*GW5nqEDJ48NndzZK1zj3vQ.png "NativeScript code splitting diagram")
 
 When code is properly split/shared `ng serve` simply ignores the NativeScript files during its build process, while `tns run` intelligently chooses which files it need to build the native apps.
 
 <img src="https://miro.medium.com/max/3405/1*E6BqogQ_1g1N8nWyhVOCMw.png" alt="NativeScript build process diagram">
-![]( =400x400)
 
 ## NativeScript Strengths:
 - Code sharing/splitting
@@ -46,12 +36,10 @@ When code is properly split/shared `ng serve` simply ignores the NativeScript fi
 
 ## Prerequisites
 
-Install node
+- Node is installed
+- `npm i @angular/cli --global`
 
-```
-npm i @angular/cli --global
-
-```
+`@Optional` follow [NativeScript Quick Setup](https://docs.nativescript.org/start/quick-setup) to prepare emulators
 
 ## Getting Started
 
@@ -132,7 +120,8 @@ You should see the classic Tour of Heroes app spin up on `localhost:4200`.
           dataEncapsulation: false,
           delay: 300,
           passThruUnknownUrl: true
-        })
+        }),
+        ...
       ]
     })
     ```
@@ -142,7 +131,7 @@ You should see the classic Tour of Heroes app spin up on `localhost:4200`.
   - Open `dashboard.component.tns.html` and replace generated markup with the following:
     ```xml
     <ActionBar title="Top Heroes"></ActionBar>
-    <FlexboxLayout class="hero-container" flexDirection="column" flexGrow="2">
+    <FlexboxLayout class="hero-container" flexDirection="column">
       <Button 
         flexGrow="1"
         *ngFor="let hero of heroes" 
@@ -188,10 +177,11 @@ You should see the classic Tour of Heroes app spin up on `localhost:4200`.
 
   - Add some markup for the native `HeroDetailComponent`:
     ```xml
+    <ActionBar [title]="hero.name + ' Details'"></ActionBar>
     <StackLayout *ngIf="hero">
       <Label [text]="hero.name" textWrap="true"></Label>
       <Label [text]="hero.id" textWrap="true"></Label>
-      <Button [text]="'TAKE PHOTO'"(tap)="handleTakePhoto()"></Button>
+      <Button [text]="'TAKE PHOTO'"(tap)="handleTakePhoto(hero.name)"></Button>
       <Image 
         *ngIf="heroImagePath" 
         [src]="heroImagePath" 
@@ -217,28 +207,34 @@ You should see the classic Tour of Heroes app spin up on `localhost:4200`.
       async handleTakePhoto(heroName: string) {
         const isAvailable = camera.isAvailable();
         if (isAvailable) {
-
-          this.heroImagePath = await camera
-            .takePicture()
-            .then(async imageAsset => {
-              const source = new ImageSource();
-              const imageSource = await source.fromAsset(imageAsset);
-              const folderPath = knownFolders.documents().path;
-              const fileName = `${heroName}.jpg`;
-              const heroImagePath = path.join(folderPath, fileName);
-              const saved: boolean = imageSource.saveToFile(heroImagePath, 'jpg');
-              if (saved) {
-                return heroImagePath;
-              }
-              return null;
-            })
-            .catch(err => {
-              console.log('Error -> ' + err.message);
-              return null;
+          this.heroImagePath = await camera.requestPermissions().then(async () => {
+            // permission request accepted or already granted 
+            return await camera.takePicture()
+              .then(async imageAsset => {
+                const source = new ImageSource();
+                const imageSource = await source.fromAsset(imageAsset);
+                const folderPath = knownFolders.documents().path;
+                const fileName = `${heroName}.jpg`;
+                const heroImagePath = path.join(folderPath, fileName);
+                const saved: boolean = imageSource.saveToFile(heroImagePath, 'jpg');
+                if (saved) {
+                  return heroImagePath;
+                }
+                return null;
+              })
+              .catch(err => {
+                console.log('Error -> ' + err.message);
+                return null;
+              });
+            },
+            () => {
+            // permission request rejected
+            // ... tell the user ...
             });
+        
         }
       }
-      
+    ...
     }
     ```
   - Take a picture!
@@ -256,30 +252,37 @@ You should see the classic Tour of Heroes app spin up on `localhost:4200`.
 
     export async function takePhoto(heroName: string) {
       const isAvailable = camera.isAvailable();
-      if (isAvailable) {
+        if (isAvailable) {
+          return await camera.requestPermissions().then(async () => {
+            // permission request accepted or already granted 
+            return await camera.takePicture()
+              .then(async imageAsset => {
+                const source = new ImageSource();
+                const imageSource = await source.fromAsset(imageAsset);
+                const folderPath = knownFolders.documents().path;
+                const fileName = `${heroName}.jpg`;
+                const heroImagePath = path.join(folderPath, fileName);
+                const saved: boolean = imageSource.saveToFile(heroImagePath, 'jpg');
+                if (saved) {
+                  return heroImagePath;
+                }
+                return null;
+              })
+              .catch(err => {
+                console.log('Error -> ' + err.message);
+                return null;
+              });
+            },
+            () => {
+            // permission request rejected
+            // ... tell the user ...
+            });
+        
+        }
 
-        return await camera
-          .takePicture()
-          .then(async imageAsset => {
-            const source = new ImageSource();
-            const imageSource = await source.fromAsset(imageAsset);
-            const folderPath = knownFolders.documents().path;
-            const fileName = `${heroName}.jpg`;
-            const heroImagePath = path.join(folderPath, fileName);
-            const saved: boolean = imageSource.saveToFile(heroImagePath, 'jpg');
-            if (saved) {
-              return heroImagePath;
-            }
-            return null;
-          })
-          .catch(err => {
-            console.log('Error -> ' + err.message);
-            return null;
-          });
-      }
     }
-
     ```
+    
   - Add the following to `hero-detail.split.ts`
     ```typescript
     export async function takePhoto(heroName: string) {
@@ -300,5 +303,11 @@ You should see the classic Tour of Heroes app spin up on `localhost:4200`.
   - Now it should use the `hero-detail.split.tns.ts` logic when in a native context and `hero-detail.split.ts` when in web context. Running `ng serve` should succeed now
 
 ## Helpful Links
+### - A great place to get started is with NativeScript's web based IDE and playground at [play.nativescript.org](https://play.nativescript.org) (the 'Build a Full App' tutorial is a great way to get acquainted with markup and layouts)
 
-### - Sebastion  [blog.angular.io](https://blog.angular.io/apps-that-work-natively-on-the-web-and-mobile-9b26852495e7)
+### - Sebastian Witalec has a great overview on  [blog.angular.io](https://blog.angular.io/apps-that-work-natively-on-the-web-and-mobile-9b26852495e7)
+
+
+### - Maximilian Schwarzmüller has a couple good resources
+  -  A comparison of NativeScript against similar technologies can be found on [academind.com](https://www.academind.com/learn/flutter/react-native-vs-flutter-vs-ionic-vs-nativescript-vs-pwa)
+  - A full NativeScript course can be found on [Udemy.com](https://www.udemy.com/course/nativescript-angular-build-native-ios-android-web-apps/)
